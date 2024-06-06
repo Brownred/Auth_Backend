@@ -1,8 +1,8 @@
 export interface signUpDetails {
-    fullName: string;
+    name: string;
     email: string;
     password: string;
     dob: Date;
-    gneder: 'Male' | 'Female';
-    Country?: string;
+    gender: 'Male' | 'Female';
+    country?: string;
 }
