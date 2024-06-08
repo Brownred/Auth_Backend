@@ -1,9 +1,15 @@
 import { Router } from "express";
 
-/** file imports */
-import { logIn, signUp } from "../handlers/signup.handler";
+
+
+// file imports 
+import { signUp } from "../handlers/signup.handler";
+import {logIn} from "../handlers/login.handler"
+
+
 
 /***************************************************************************************************/
+
 
 
 

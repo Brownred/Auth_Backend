@@ -27,7 +27,7 @@ Connect
 app.use('/api/auth', authRouter)
 
 // Server
-app.listen(8000, () => {
+app.listen(4000, () => {
     console.log('server listening on http://localhost:4000')
 })  
 
