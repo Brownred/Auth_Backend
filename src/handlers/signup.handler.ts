@@ -45,7 +45,7 @@ export const signUp  = async (req: Request, res: Response) => {
         await new User({name, email, password: hashedPassword, dob, gender, country}).save().then(() => console.log('User Created')).catch((err) => {throw new Error(err)})
 
         // Send cookie with access token
-        res.cookie('accessToken', token({email}), {maxAge: 3600000, httpOnly: true}).status(201).json({message: 'User Created'})
+        res.cookie('accessToken', token(email), {maxAge: 3600000, httpOnly: true}).status(201).json({message: 'User Created'})
 
     } catch (error) {
 

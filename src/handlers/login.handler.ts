@@ -46,13 +46,13 @@ export const logIn  = async (req: Request, res: Response) => {
         const { password: hashedPassword, ...rest } = exists.toObject();
     
         // give jwt and store in cookie
-        res.cookie('accessToken', token({email}), {httpOnly: true, maxAge: 3600000}).status(200).json(rest)
+        res.cookie('accessToken', token(email), {httpOnly: true, maxAge: 3600000}).status(200).json({message: 'Logged in successfully', ...rest})
 
     } catch (error) {
         
         // catch any other errors
         console.error(error)
-        /** should be dynamic !!! */
+        
         res.status(500).json({message: 'Internal server error'})
 
     }

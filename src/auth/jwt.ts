@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken'
+import jwt, { Secret } from 'jsonwebtoken';
 
 
 
-export const token = (email: Object) => {
-    jwt.sign(email, process.env.JWT_SECRET, {expiresIn: '3600s'})
+export const token = (email: string) => {
+    return jwt.sign({email}, process.env.JWT_SECRET as Secret, {expiresIn: '3600s'})
 }

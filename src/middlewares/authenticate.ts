@@ -1,11 +1,21 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from 'jsonwebtoken'
+import jwt, { Secret } from 'jsonwebtoken'
+
 
 
 
 /*************************************************************************************************/
 
 
+
+// Extend the Request interface
+declare global {
+  namespace Express {
+    interface Request {
+      user?: jwt.JwtPayload | string;
+    }
+  }
+}
 
 
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
@@ -17,17 +27,18 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
      * call next
      */
 
-    const token = req.cookies.accessToken
+    
+    const token = req.cookies.accessToken 
 
     if (!token) {
         return res.status(401).json({message: 'Not Authorized'})
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (error, user) => {
+    jwt.verify(token as string, process.env.JWT_SECRET as Secret, (error, user) => {
         if (error) {
             return res.status(403).json({message: 'invalid token'})
         }
-        /** If i should check the db or not */
+        
         req.user = user
         next()
 
