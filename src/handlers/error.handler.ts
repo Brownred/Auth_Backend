@@ -6,7 +6,40 @@ import { ErrorHandler } from '../utils/types';
 /*************************************************************************************************/
 
 
+// Handle DB Errors
+export const handleErrors = (err: any) => {
+    // send back json response of the error
+    
+    let errors: { [key: string]: string } = { email: '', password: '', name: '', dob: '' }
 
+    // duplicate email
+    if (err.code === 11000) {
+        errors.email = 'email already in use'
+        
+    }
+
+    // Purse the error message and populate the errors object
+    if (err.name.includes('ValidationError')) {
+        Object.values(err.errors).forEach((value: unknown) => {
+            const properties = (value as { properties: any }).properties;
+            errors[properties.path] = properties.message
+        })
+    }
+
+    // Function to filter out keys with empty values
+    function filterErrors(errors: { [key: string]: string }): { [key: string]: string } {
+        const filteredErrors: { [key: string]: string } = {};
+        Object.keys(errors).forEach(key => {
+            if (errors[key] !== '') {
+                filteredErrors[key] = errors[key];
+            }
+        });
+        return filteredErrors;
+    }
+
+    return filterErrors(errors);
+
+}
 
 export class CustomError extends Error {
     statusCode: number;

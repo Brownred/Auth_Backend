@@ -6,7 +6,7 @@ import bcrypt from "bcrypt"
 
 // file imports
 import { User } from "../db/schema/user.schema";
-import { errorHandler } from "./error.handler";
+import { handleErrors } from "./error.handler";
 import { token } from "../auth/jwt";
 
 
@@ -14,20 +14,6 @@ import { token } from "../auth/jwt";
 /*************************************************************************************************/
 
 
-
-// Handle DB Errors
-const handleErrors = (err: any) => {
-    // send back json response of the error
-    
-    let error = { email: '', statusCode: '' }
-    console.log(err._message)
-    console.log(err.message)
-    if (err._message.includes('ValidationError')) {
-        Object.values(err.errors).forEach(({properties}) => {
-            console.log(properties)
-        })
-    }
-}
 
 
 export const signUp  = async (req: Request, res: Response) => {
@@ -45,11 +31,11 @@ export const signUp  = async (req: Request, res: Response) => {
 
     try {
 
-        //Check if the email already exists
-        const exists = await User.findOne({ email })
-        if (exists) {
-            throw errorHandler(401, 'email already in use')
-        }
+        //Check if the email already exists => this is done in the schema
+        // const exists = await User.findOne({ email })
+        // if (exists) {
+        //     throw errorHandler(401, 'email already in use')
+        // }
 
         // hash password for safety. async because they are cou intensive
         const salt = await bcrypt.genSalt(8)
@@ -63,8 +49,8 @@ export const signUp  = async (req: Request, res: Response) => {
 
     } catch (err: any) {
         // catch any other errors
-        handleErrors(err)
-        res.status(400).json({message: err})
+        const errors = handleErrors(err)
+        res.status(400).json(errors)
     }
 
 }
