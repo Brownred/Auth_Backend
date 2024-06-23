@@ -15,6 +15,20 @@ import { token } from "../auth/jwt";
 
 
 
+// Handle DB Errors
+const handleErrors = (err: any) => {
+    // send back json response of the error
+    
+    let error = { email: '', statusCode: '' }
+    console.log(err._message)
+    console.log(err.message)
+    if (err._message.includes('ValidationError')) {
+        Object.values(err.errors).forEach(({properties}) => {
+            console.log(properties)
+        })
+    }
+}
+
 
 export const signUp  = async (req: Request, res: Response) => {
     /** 
@@ -42,16 +56,15 @@ export const signUp  = async (req: Request, res: Response) => {
         const hashedPassword = await bcrypt.hash(password, salt)
 
         // write user details to database
-        await new User({name, email, password: hashedPassword, dob, gender, country}).save().then(() => console.log('User Created')).catch((err) => {throw new Error(err)})
+        await new User({name, email, password: hashedPassword, dob, gender, country}).save().then(() => console.log('User Created'))
 
         // Send cookie with access token
         res.cookie('accessToken', token(email), {maxAge: 3600000, httpOnly: true}).status(201).json({message: 'User Created'})
 
-    } catch (error) {
-
+    } catch (err: any) {
         // catch any other errors
-        console.error(error)
-        res.status(500).json({message: 'Internal Server Error'})
+        handleErrors(err)
+        res.status(400).json({message: err})
     }
 
 }

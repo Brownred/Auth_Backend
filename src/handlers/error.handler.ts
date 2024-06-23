@@ -11,7 +11,7 @@ import { ErrorHandler } from '../utils/types';
 export class CustomError extends Error {
     statusCode: number;
 
-    constructor(statusCode: number, message?: string) {
+    constructor(statusCode: number = 500, message?: string) {
         super(message);
         this.statusCode = statusCode;
     }
