@@ -10,7 +10,7 @@ import { ErrorHandler } from '../utils/types';
 export const handleErrors = (err: any) => {
     // send back json response of the error
     
-    let errors: { [key: string]: string } = { email: '', password: '', name: '', dob: '' }
+    let errors: { [key: string]: string } = { email: '', password: '', name: '', dob: '', message: '' }
 
     // duplicate email
     if (err.code === 11000) {
@@ -24,6 +24,8 @@ export const handleErrors = (err: any) => {
             const properties = (value as { properties: any }).properties;
             errors[properties.path] = properties.message
         })
+    } else {
+        errors.message = (`The error that happend which is not the db error is: => ${err}`)
     }
 
     // Function to filter out keys with empty values
@@ -36,6 +38,7 @@ export const handleErrors = (err: any) => {
         });
         return filteredErrors;
     }
+
 
     return filterErrors(errors);
 

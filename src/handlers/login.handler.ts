@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 // File imports
 import { LogInDetails } from "../utils/types"
 import { User } from "../db/schema/user.schema"
-import { CustomError, errorHandler } from "./error.handler"
+import { CustomError, errorHandler, handleErrors } from "./error.handler"
 import { token } from "../auth/jwt";
 
 
@@ -26,20 +26,21 @@ export const logIn  = async (req: Request, res: Response) => {
      * handle errors
      */
 
-    const {email, password}: LogInDetails = req.body
-
+    
     try {
+        
+        const {email, password}: LogInDetails = req.body
 
         // Check user existence in db
         const exists = await User.findOne({email})
         if (!exists) {
-            throw errorHandler(401, 'credentials Does not exists')
+            return res.status(401).json({credentials: "Email and password does not match"})
         }
     
         // validate password
         const validPassword = await bcrypt.compare(password, exists.password)
         if (!validPassword) {
-            throw errorHandler(401, 'Invalid Password')
+            return res.status(401).json({credentials: "Email and password does not match"})
         }
     
         // retrieve the user data to be sent back to user for other frontend stuff. The password is removed for safety
@@ -50,10 +51,7 @@ export const logIn  = async (req: Request, res: Response) => {
 
     } catch (error) {
         
-        // catch any other errors
-        console.error(error)
-        
-        res.status(500).json({message: 'Internal server error'})
+        res.status(401).json(handleErrors(error))
 
     }
 

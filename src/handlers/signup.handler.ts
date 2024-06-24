@@ -50,7 +50,7 @@ export const signUp  = async (req: Request, res: Response) => {
     } catch (err: any) {
         // catch any other errors
         const errors = handleErrors(err)
-        res.status(400).json(errors)
+        res.status(401).json(errors)
     }
 
 }
